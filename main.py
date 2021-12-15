@@ -16,7 +16,7 @@ if __name__ == '__main__':
         initial_state='0',
         final_states={'3', '4', '5', '6'}
     )
-    dfa.print_transition_matrix()
+    dfa.show_diagram(path='output/DFA/before_minimization.png')
     new_dfa = dfa.minimize()
-    new_dfa.print_transition_matrix()
+    new_dfa.show_diagram(path='output/DFA/after_minimization.png')
 

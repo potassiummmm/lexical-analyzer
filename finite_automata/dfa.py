@@ -1,5 +1,6 @@
 from collections import deque
 from .fa import FA
+from pydot import Dot, Edge, Node
 
 
 class DFA(FA):
@@ -65,7 +66,7 @@ class DFA(FA):
                         split_results = []
                         for next_state in next_states:
                             split_results.append(set(state for state in cur_states
-                                                 if self.transitions[state][split_char] == next_state))
+                                                     if self.transitions[state][split_char] == next_state))
                         if len(split_results) > 1:
                             groups.remove(frozenset(cur_states))
                             for result in split_results:
@@ -114,3 +115,57 @@ class DFA(FA):
         new_dfa.remove_unreachable_states()
         new_dfa.merge_states()
         return new_dfa
+
+    def read_input(self, input_str: str):
+        # TODO: complete this method
+        input_list = str.split(' ')
+        cur_state = self.initial_state
+        for string in input_list:
+            accepted = ''
+            for input_char in string:
+                if input_char in self.transitions[cur_state]:
+                    accepted += input_char
+                    cur_state = self.transitions[cur_state][input_char]
+                else:
+                    if cur_state in self.final_states:
+                        print(accepted)
+                    else:
+                        print('error')
+                        return
+        print(input_str)
+
+    def show_diagram(self, path):
+        """
+        Creates the graph associated with this DFA
+        :param path: path to save the image file
+        :return:
+        """
+        graph = Dot(graph_type='digraph', rankdir='LR')
+        nodes = {}
+        for state in self.all_states:
+            if state == self.initial_state:
+                if state in self.final_states:
+                    initial_state_node = Node(
+                        state,
+                        peripheries=2)
+                else:
+                    initial_state_node = Node(
+                        state)
+                nodes[state] = initial_state_node
+                graph.add_node(initial_state_node)
+            else:
+                if state in self.final_states:
+                    state_node = Node(state, peripheries=2)
+                else:
+                    state_node = Node(state)
+                nodes[state] = state_node
+                graph.add_node(state_node)
+        # Add edges
+        for from_state, lookup in self.transitions.items():
+            for to_label, to_state in lookup.items():
+                graph.add_edge(Edge(
+                    nodes[from_state],
+                    nodes[to_state],
+                    label=to_label
+                ))
+        graph.write_png(path)
