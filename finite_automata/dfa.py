@@ -1,6 +1,7 @@
 from collections import deque
 from .fa import FA
 from pydot import Dot, Edge, Node
+from lexer.token import Token
 
 
 class DFA(FA):
@@ -116,9 +117,8 @@ class DFA(FA):
         new_dfa.merge_states()
         return new_dfa
 
-    def read_input(self, input_str: str):
-        # TODO: complete this method
-        input_list = str.split(' ')
+    def accept_input(self, input_str: str):
+        input_list = input_str.split(' ')
         cur_state = self.initial_state
         for string in input_list:
             accepted = ''
@@ -128,17 +128,21 @@ class DFA(FA):
                     cur_state = self.transitions[cur_state][input_char]
                 else:
                     if cur_state in self.final_states:
-                        print(accepted)
+                        Token.print_token(accepted)
+                        if input_char in self.transitions[self.initial_state]:
+                            accepted = input_char
+                        else:
+                            print('error')
+                            return
                     else:
                         print('error')
                         return
-        print(input_str)
+            Token.print_token(string)
 
     def show_diagram(self, path):
         """
         Creates the graph associated with this DFA
         :param path: path to save the image file
-        :return:
         """
         graph = Dot(graph_type='digraph', rankdir='LR')
         nodes = {}
@@ -168,4 +172,4 @@ class DFA(FA):
                     nodes[to_state],
                     label=to_label
                 ))
-        graph.write_png(path)
+        graph.write(path, format='png')
