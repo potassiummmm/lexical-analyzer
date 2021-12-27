@@ -1,6 +1,7 @@
 import prettytable as pt
 from pydot import Dot, Edge, Node
-# from finite_automata.fa import *
+
+
 class NFA:
     def __init__(self, language: set):
         self.states = set()
@@ -23,13 +24,13 @@ class NFA:
                 self.final_states.append(state)
 
     def add_transition(self, start, end, inp):
-        '''
+        """
         This function adds the transition from start to end and accepts p
         :param start:
         :param end:
         :param inp:
         :return:
-        '''
+        """
         self.language.add(inp)
         self.states.add(start)
         self.states.add(end)
@@ -40,7 +41,7 @@ class NFA:
                 self.transitions[start][inp] = {end}
 
         else:
-            self.transitions[start] = {inp : {end}}
+            self.transitions[start] = {inp: {end}}
 
     def rebuild_from_number(self, start_num):
         translations = {}

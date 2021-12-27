@@ -1,10 +1,13 @@
 from finite_automata import DFA
+
+
 class NFA2DFA:
     def __init__(self, nfa):
+        self.dfa = None
         self.build_nfa(nfa)
 
     def build_nfa(self, nfa):
-        '''
+        """
         Algorithm to get dfa from nfa.
         In detail:
             1. Get m-cast expression of original nfa.
@@ -12,7 +15,7 @@ class NFA2DFA:
             3. Rename the status.
         :param nfa:
         :return:
-        '''
+        """
         nfa = self.get_m_cast(nfa)
         states = dict()
         start_e_closure = nfa.get_e_closure(1)
@@ -33,7 +36,7 @@ class NFA2DFA:
                     states[frozenset(acc_state)] = cur_state
                     q_acc_states = [[cur_state, acc_state]] + q_acc_states
                     cur_state += 1
-                if not state_num in transitions:
+                if state_num not in transitions:
                     transitions[state_num] = dict()
                 transitions[state_num][char] = states[frozenset(acc_state)]
         new_language = nfa.language
@@ -44,18 +47,19 @@ class NFA2DFA:
             if original_final_state in item:
                 final_states.append(states[item])
 
-        dfa = DFA(all_states=[_ for _ in range(cur_state)], input_alphabet=new_language, transitions=transitions, initial_state=0, final_states=final_states)
+        dfa = DFA(all_states=[_ for _ in range(cur_state)], input_alphabet=new_language, transitions=transitions,
+                  initial_state=0, final_states=final_states)
         self.dfa = dfa
         # dfa.print_transition_matrix()
         # dfa.show_diagram('test.jpg')
         # print(transitions)
 
-    def get_accepted_states(self, nfa, closure, char):
+    @staticmethod
+    def get_accepted_states(nfa, closure, char):
         reachable_states = set()
 
-
-            # if char == nfa.epsilon():
-            #     continue
+        # if char == nfa.epsilon():
+        #     continue
         for item in closure:
             # accept a char
             if item in nfa.transitions:
@@ -71,8 +75,8 @@ class NFA2DFA:
                         reachable_states.union(e_closure)
         return reachable_states
 
-
-    def get_m_cast(self, nfa):
+    @staticmethod
+    def get_m_cast(nfa):
         nfa, end = nfa.rebuild_from_number(2)
         init_state = 1
         end_state = end

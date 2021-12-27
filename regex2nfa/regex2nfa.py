@@ -14,8 +14,8 @@ class Regex2NFA:
         self.alphabet = [chr(i) for i in range(65, 91)]
         self.alphabet += [chr(i) for i in range(97, 123)]
         self.alphabet += [chr(i) for i in range(48, 58)]
-        self.stack = [] # character stack
-        self.automata = [] # for synthesizing an overall automata
+        self.stack = []  # character stack
+        self.automata = []  # for synthesizing an overall automata
         self.build_nfa()
 
     def get_nfa(self):
@@ -34,13 +34,12 @@ class Regex2NFA:
             elif op == self.oor:
                 self.automata.append(BuildAutomata.orstruct(a, b))
 
-
     def add_operator_to_stack(self, op):
-        '''
+        """
         Adding an op to stack, and checking whether the bracket could be eliminated.
         :param op:
         :return:
-        '''
+        """
         while len(self.stack):
             # continuously process all binary elements.
             if self.stack[-1] == self.openingBracket:
@@ -52,17 +51,16 @@ class Regex2NFA:
                 break
         self.stack.append(op)
 
-
     def build_nfa(self):
-        '''
+        """
         Mid-exp to Post-exp, which is suitable for processing.
         :return:
-        '''
+        """
         language = set()
         previous = "::e::"
         for char in self.regex:
             if char in self.alphabet:
-                language.add(char) # a new accept language
+                language.add(char)  # a new accept language
                 if previous in self.alphabet + [self.closingBracket] + [self.star]:
                     self.add_operator_to_stack(self.dot)
                 self.automata.append(BuildAutomata.basicstruct(char))
