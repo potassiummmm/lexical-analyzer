@@ -17,7 +17,6 @@ class Regex2NFA:
         self.stack = [] # character stack
         self.automata = [] # for synthesizing an overall automata
         self.build_nfa()
-        self.nfa.show_diagram(path='output/DFA/before_minimization.png')
 
     def get_nfa(self):
         return self.nfa

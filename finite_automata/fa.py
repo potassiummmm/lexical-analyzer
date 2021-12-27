@@ -23,5 +23,14 @@ class FA(ABC):
         inputs.sort()
         table.field_names = ["State"] + [char for char in inputs]
         for state in states:
-            table.add_row([state] + [self.transitions[state][input_char] for input_char in inputs])
+            if state not in self.transitions:
+                table.add_row([state] + [None] * len(inputs))
+                continue
+            transition_row = []
+            for input_char in inputs:
+                if input_char in self.transitions[state]:
+                    transition_row.append(self.transitions[state][input_char])
+                else:
+                    transition_row.append(None)
+            table.add_row([state] + transition_row)
         print(table)

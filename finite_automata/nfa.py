@@ -67,8 +67,8 @@ class NFA:
     def print_transition_matrix(self):
         table = pt.PrettyTable()
         states = list(self.states)
+        self.language.add(self.epsilon())
         inputs = list(self.language)
-        inputs += [self.epsilon()]
         states.sort()
         inputs.sort()
         table.field_names = ["State"] + [char for char in inputs]
@@ -120,3 +120,22 @@ class NFA:
                         label=to_label
                     ))
         graph.write(path, format='png')
+
+    def get_e_closure(self, state):
+        '''
+        E-closure construction algorithm.
+        Given the state, using BFS to search all reachable positions.
+        :return: all reachable position sets.
+        '''
+        all_states = set()
+        q_states = [state]
+        while len(q_states):
+            cur_state = q_states.pop()
+            all_states.add(cur_state)
+            if cur_state in self.transitions:
+                if self.epsilon() in self.transitions[cur_state]:
+                    for item in self.transitions[cur_state][self.epsilon()]:
+                        if item not in all_states:
+                            all_states.add(item)
+                            q_states = [item] + q_states
+        return all_states
