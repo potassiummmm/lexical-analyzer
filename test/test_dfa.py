@@ -1,0 +1,54 @@
+from finite_automata import DFA
+
+
+def test_min_dfa_1():
+    dfa = DFA(
+        all_states={'0', '1', '2', '3', '4', '5', '6'},
+        input_alphabet={'a', 'b'},
+        transitions={
+            '0': {'a': '1', 'b': '2'},
+            '1': {'a': '3', 'b': '2'},
+            '2': {'a': '1', 'b': '5'},
+            '3': {'a': '3', 'b': '4'},
+            '4': {'a': '6', 'b': '5'},
+            '5': {'a': '6', 'b': '5'},
+            '6': {'a': '3', 'b': '4'},
+        },
+        initial_state='0',
+        final_states={'3', '4', '5', '6'}
+    )
+    min_dfa = dfa.minimize()
+    assert min_dfa.transitions == {
+            '0': {'a': '2', 'b': '1'},
+            '1': {'a': '2', 'b': '3'},
+            '2': {'a': '3', 'b': '1'},
+            '3': {'a': '3', 'b': '3'},
+        } or min_dfa.transitions == {
+            '0': {'a': '1', 'b': '2'},
+            '1': {'a': '3', 'b': '2'},
+            '2': {'a': '1', 'b': '3'},
+            '3': {'a': '3', 'b': '3'},
+        }
+
+
+def test_min_dfa_2():
+    dfa = DFA(
+        all_states={'0', '1', '2', '3', '4', '5'},
+        input_alphabet={'a', 'b'},
+        transitions={
+            '0': {'a': '1', 'b': '3'},
+            '1': {'a': '0', 'b': '3'},
+            '2': {'a': '1', 'b': '4'},
+            '3': {'a': '5', 'b': '5'},
+            '4': {'a': '3', 'b': '3'},
+            '5': {'a': '5', 'b': '5'},
+        },
+        initial_state='0',
+        final_states={'3', '5'}
+    )
+    min_dfa = dfa.minimize()
+    assert min_dfa.transitions == {
+            '0': {'a': '1', 'b': '2'},
+            '1': {'a': '0', 'b': '2'},
+            '2': {'a': '2', 'b': '2'},
+        }
