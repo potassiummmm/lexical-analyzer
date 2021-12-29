@@ -1,7 +1,7 @@
 from collections import deque
 from .fa import FA
 from pydot import Dot, Edge, Node
-from lexer.token import Token
+from .token import Token
 
 
 class DFA(FA):
@@ -124,21 +124,27 @@ class DFA(FA):
         for string in input_list:
             accepted = ''
             for input_char in string:
-                if input_char in self.transitions[cur_state]:
+                if cur_state in self.transitions.keys() and input_char in self.transitions[cur_state]: # accept and goto next state
                     accepted += input_char
                     cur_state = self.transitions[cur_state][input_char]
                 else:
                     if cur_state in self.final_states:
-                        Token.print_token(accepted)
+                        if accepted != '':
+                            Token.print_token(accepted)
                         if input_char in self.transitions[self.initial_state]:
                             accepted = input_char
+                            cur_state = self.transitions[self.initial_state][input_char]
                         else:
                             print('error')
                             return
                     else:
                         print('error')
                         return
-            Token.print_token(string)
+            if accepted != '':
+                if cur_state in self.final_states:
+                    Token.print_token(accepted)
+                else:
+                    print('error')
 
     def show_diagram(self, path):
         """

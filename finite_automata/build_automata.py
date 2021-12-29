@@ -1,4 +1,4 @@
-from finite_automata.nfa import NFA
+from .nfa import NFA
 
 
 class BuildAutomata:

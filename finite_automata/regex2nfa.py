@@ -1,5 +1,4 @@
-import finite_automata.nfa
-from .build_automata import BuildAutomata
+from finite_automata.build_automata import BuildAutomata
 
 
 class Regex2NFA:

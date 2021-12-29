@@ -20,6 +20,8 @@ class Token:
         'DO': TokenType.KEYWORD,
         'IF': TokenType.KEYWORD,
         'THEN': TokenType.KEYWORD,
+        'ELSE': TokenType.KEYWORD,
+        'GOTO': TokenType.KEYWORD,
         '+': TokenType.OPERATOR,
         '-': TokenType.OPERATOR,
         '*': TokenType.OPERATOR,

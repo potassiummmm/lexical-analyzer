@@ -1,4 +1,6 @@
-from finite_automata import DFA
+from .dfa import DFA
+
+
 class NFA2DFA:
     def __init__(self, nfa):
         self.build_dfa(nfa)
@@ -45,8 +47,6 @@ class NFA2DFA:
         for item in states:
             for original_item in original_final_state:
                 if original_item in item:
-                    if original_item == 16:
-                        print(original_item)
                     final_states.append(states[item])
 
                     if states[item] not in final_dict:
@@ -64,9 +64,8 @@ class NFA2DFA:
     def get_accepted_states(self, nfa, closure, char):
         reachable_states = set()
 
-
-            # if char == nfa.epsilon():
-            #     continue
+        # if char == nfa.epsilon():
+        #     continue
         for item in closure:
             # accept a char
             if item in nfa.transitions:
@@ -78,7 +77,6 @@ class NFA2DFA:
                         reachable_states = nfa.get_e_closure(target).union(reachable_states)
 
         return reachable_states
-
 
     def get_m_cast(self, nfa):
         nfa, end = nfa.rebuild_from_number(2)

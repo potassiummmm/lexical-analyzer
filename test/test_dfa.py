@@ -1,4 +1,4 @@
-from finite_automata import DFA
+from finite_automata.dfa import DFA
 
 
 def test_min_dfa_1():
@@ -15,9 +15,14 @@ def test_min_dfa_1():
             6: {'a': 3, 'b': 4},
         },
         initial_state=0,
-        final_states={3, 4, 5, 6}
+        final_states={3, 4, 5, 6},
+        label_dict={}
     )
+    dfa.print_transition_matrix()
+    dfa.show_diagram('../output/DFA/test1_before.png')
     min_dfa = dfa.minimize()
+    min_dfa.print_transition_matrix()
+    min_dfa.show_diagram('../output/DFA/test1_after.png')
     assert min_dfa.transitions == {
             0: {'a': 2, 'b': 1},
             1: {'a': 2, 'b': 3},
@@ -44,9 +49,14 @@ def test_min_dfa_2():
             5: {'a': 5, 'b': 5},
         },
         initial_state=0,
-        final_states={3, 5}
+        final_states={3, 5},
+        label_dict={}
     )
+    dfa.print_transition_matrix()
+    dfa.show_diagram('../output/DFA/test2_before.png')
     min_dfa = dfa.minimize()
+    min_dfa.print_transition_matrix()
+    min_dfa.show_diagram('../output/DFA/test2_after.png')
     assert min_dfa.transitions == {
             0: {'a': 1, 'b': 2},
             1: {'a': 0, 'b': 2},
