@@ -1,9 +1,10 @@
 from finite_automata.dfa import DFA
 from regex2nfa.build_automata import BuildAutomata
 from regex2nfa import Regex2NFA
-from test import test_nfa2dfa
+from test import test_nfa2dfa, test_lexer
 if __name__ == '__main__':
-    test_nfa2dfa.test_nfa()
+    # test_nfa2dfa.test_nfa()
+    test_lexer.lexer_test()
     # dfa = DFA(
     #     all_states={'0', '1', '2', '3', '4', '5', '6'},
     #     input_alphabet={'a', 'b'},

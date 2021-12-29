@@ -6,9 +6,10 @@ from lexer.token import Token
 
 class DFA(FA):
     def __init__(self, *, all_states, input_alphabet, transitions,
-                 initial_state, final_states):
+                 initial_state, final_states, label_dict):
         super().__init__(all_states=all_states, input_alphabet=input_alphabet, transitions=transitions,
                          initial_state=initial_state, final_states=final_states)
+        self.label_dict = label_dict
 
     def remove_unreachable_states(self):
         reachable_states = self.get_reachable_states()
@@ -159,7 +160,10 @@ class DFA(FA):
                 graph.add_node(initial_state_node)
             else:
                 if state in self.final_states:
-                    state_node = Node(state, peripheries=2)
+                    if self.label_dict != dict():
+                        state_node = Node(str(state) + ', ' + '_'.join(list(self.label_dict[state])), peripheries=2)
+                    else:
+                        state_node = Node(str(state) , peripheries=2)
                 else:
                     state_node = Node(state)
                 nodes[state] = state_node
@@ -167,9 +171,16 @@ class DFA(FA):
         # Add edges
         for from_state, lookup in self.transitions.items():
             for to_label, to_state in lookup.items():
-                graph.add_edge(Edge(
-                    nodes[from_state],
-                    nodes[to_state],
-                    label=to_label
-                ))
+                if to_label != ',':
+                    graph.add_edge(Edge(
+                        nodes[from_state],
+                        nodes[to_state],
+                        label=to_label
+                    ))
+                else:
+                    graph.add_edge(Edge(
+                        nodes[from_state],
+                        nodes[to_state],
+                        label='，'
+                    ))
         graph.write(path, format='png')

@@ -1,9 +1,9 @@
 from finite_automata import DFA
 class NFA2DFA:
     def __init__(self, nfa):
-        self.build_nfa(nfa)
+        self.build_dfa(nfa)
 
-    def build_nfa(self, nfa):
+    def build_dfa(self, nfa):
         '''
         Algorithm to get dfa from nfa.
         In detail:
@@ -23,6 +23,7 @@ class NFA2DFA:
         cur_state += 1
         while len(q_acc_states):
             state_num, cur_closure = q_acc_states.pop()
+            # if state_num == 16:
             for char in nfa.language:
                 if char == nfa.epsilon():
                     continue
@@ -38,13 +39,23 @@ class NFA2DFA:
                 transitions[state_num][char] = states[frozenset(acc_state)]
         new_language = nfa.language
         new_language.discard(nfa.epsilon())
-        original_final_state = nfa.final_states[0]
+        original_final_state = nfa.final_states
         final_states = []
+        final_dict = dict()
         for item in states:
-            if original_final_state in item:
-                final_states.append(states[item])
+            for original_item in original_final_state:
+                if original_item in item:
+                    if original_item == 16:
+                        print(original_item)
+                    final_states.append(states[item])
 
-        dfa = DFA(all_states=[_ for _ in range(cur_state)], input_alphabet=new_language, transitions=transitions, initial_state=0, final_states=final_states)
+                    if states[item] not in final_dict:
+                        final_dict[states[item]] = {nfa.label_dict[original_item]}
+                    else:
+                        if final_dict[states[item]] == 'identifier':
+                            final_dict[states[item]] = {nfa.label_dict[original_item]}
+        dfa = DFA(all_states=[_ for _ in range(cur_state)], input_alphabet=new_language, transitions=transitions,
+                  initial_state=0, final_states=final_states, label_dict=final_dict)
         self.dfa = dfa
         # dfa.print_transition_matrix()
         # dfa.show_diagram('test.jpg')
@@ -62,13 +73,10 @@ class NFA2DFA:
 
                 if char in nfa.transitions[item]:
                     # make each state accept this char.
-                    e_closure = set()
+                    # e_closure = set()
                     for target in nfa.transitions[item][char]:
-                        e_closure = nfa.get_e_closure(target).union(e_closure)
-                    if char not in reachable_states:
-                        reachable_states = e_closure  # type:set
-                    else:
-                        reachable_states.union(e_closure)
+                        reachable_states = nfa.get_e_closure(target).union(reachable_states)
+
         return reachable_states
 
 
@@ -80,6 +88,8 @@ class NFA2DFA:
 
         nfa.add_transition(init_state, 2, nfa.epsilon())
         # We got the NFA from standard construction, thus it contains only one final state.
-        nfa.add_transition(nfa.final_states[0], end_state, nfa.epsilon())
-        nfa.final_states = [end_state]
+        for item in nfa.final_states:
+            nfa.add_transition(item, end_state, nfa.epsilon())
+        # nfa.final_states = [end - 1]
+        # nfa.final_states = [end_state]
         return nfa

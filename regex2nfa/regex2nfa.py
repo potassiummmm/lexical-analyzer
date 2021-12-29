@@ -3,7 +3,7 @@ from .build_automata import BuildAutomata
 
 
 class Regex2NFA:
-    def __init__(self, regex):
+    def __init__(self, regex, type='K'):
         self.star = '*'
         self.dot = '.'
         self.oor = '|'
@@ -16,7 +16,10 @@ class Regex2NFA:
         self.alphabet += [chr(i) for i in range(48, 58)]
         self.stack = [] # character stack
         self.automata = [] # for synthesizing an overall automata
-        self.build_nfa()
+        self.automata_new = None
+
+        self.build_nfa(type)
+
 
     def get_nfa(self):
         return self.nfa
@@ -53,40 +56,51 @@ class Regex2NFA:
         self.stack.append(op)
 
 
-    def build_nfa(self):
+    def build_nfa(self, type='K'):
         '''
         Mid-exp to Post-exp, which is suitable for processing.
         :return:
         '''
         language = set()
+
         previous = "::e::"
         for char in self.regex:
-            if char in self.alphabet:
-                language.add(char) # a new accept language
-                if previous in self.alphabet + [self.closingBracket] + [self.star]:
-                    self.add_operator_to_stack(self.dot)
-                self.automata.append(BuildAutomata.basicstruct(char))
-            elif char == self.openingBracket:
-                if previous in self.alphabet + [self.closingBracket] + [self.star]:
-                    self.add_operator_to_stack(self.dot)
-                self.stack.append(char)
-            elif char == self.closingBracket:
-                while 1:
-                    op = self.stack.pop()
-                    if op == self.openingBracket:
-                        break
-                    elif op in self.operators:
-                        self.process_stack(op)
-            elif char == self.star:
-                self.process_stack(char)
+            if type == 'K':
+                if char in self.alphabet:
+                    language.add(char) # a new accept language
+                    if previous in self.alphabet + [self.closingBracket] + [self.star]:
+                        self.add_operator_to_stack(self.dot)
+                    self.automata.append(BuildAutomata.basicstruct(char))
+                elif char == self.openingBracket:
+                    if previous in self.alphabet + [self.closingBracket] + [self.star]:
+                        self.add_operator_to_stack(self.dot)
+                    self.stack.append(char)
+                elif char == self.closingBracket:
+                    while 1:
+                        op = self.stack.pop()
+                        if op == self.openingBracket:
+                            break
+                        elif op in self.operators:
+                            self.process_stack(op)
+                elif char == self.star:
+                    self.process_stack(char)
 
-            elif char in self.operators:
-                self.add_operator_to_stack(char)
-            previous = char
+                elif char in self.operators:
+                    self.add_operator_to_stack(char)
+                previous = char
+            else:
+                if char in self.alphabet:
+                    language.add(char)
+                if self.automata_new is not None:
+                    self.automata_new = BuildAutomata.dotstruct(self.automata_new, BuildAutomata.basicstruct(char))
+                else:
+                    self.automata_new = BuildAutomata.basicstruct(char)
 
         while len(self.stack):
             op = self.stack.pop()
             self.process_stack(op)
-
-        self.nfa = self.automata[-1]
+        if type == 'K':
+            self.nfa = self.automata[-1]
+        else:
+            self.nfa = self.automata_new
         self.nfa.language = language

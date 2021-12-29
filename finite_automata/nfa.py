@@ -2,12 +2,13 @@ import prettytable as pt
 from pydot import Dot, Edge, Node
 # from finite_automata.fa import *
 class NFA:
-    def __init__(self, language: set):
+    def __init__(self, language: set, label=None):
         self.states = set()
         self.start_state = None
         self.final_states = []
         self.transitions = dict()
         self.language = language
+        self.label_dict = dict()
 
     @staticmethod
     def epsilon():
@@ -17,10 +18,14 @@ class NFA:
         self.start_state = state
         self.states.add(state)
 
-    def add_final_states(self, states):
+    def add_final_states(self, states, label=None):
         for state in states:
             if state not in self.final_states:
                 self.final_states.append(state)
+            if label is not None:
+                self.label_dict[state] = label
+
+
 
     def add_transition(self, start, end, inp):
         '''
@@ -49,7 +54,12 @@ class NFA:
             start_num += 1
         rebuild = NFA(self.language)
         rebuild.set_start_state(translations[self.start_state])
-        rebuild.add_final_states([translations[self.final_states[0]]])
+        rebuild.add_final_states([translations[item] for item in self.final_states])
+        new_label_dict = dict()
+        for item in self.label_dict:
+            new_label_dict[translations[item]] = self.label_dict[item]
+        rebuild.label_dict = new_label_dict
+
         # print(self.transitions)
         for start, trans in self.transitions.items():
             for tran in trans:
@@ -92,7 +102,9 @@ class NFA:
         """
         graph = Dot(graph_type='digraph', rankdir='LR')
         nodes = {}
+
         for state in self.states:
+
             if state == self.start_state:
                 if state in self.final_states:
                     initial_state_node = Node(
@@ -105,7 +117,11 @@ class NFA:
                 graph.add_node(initial_state_node)
             else:
                 if state in self.final_states:
-                    state_node = Node(state, peripheries=2)
+                    if self.label_dict != dict():
+                        state_node = Node(str(state) + ', ' + (self.label_dict[state]
+                                                           if self.label_dict[state] != ',' else '，'), peripheries=2)
+                    else:
+                        state_node = Node(str(state), peripheries=2)
                 else:
                     state_node = Node(state)
                 nodes[state] = state_node
@@ -114,11 +130,18 @@ class NFA:
         for from_state, lookup in self.transitions.items():
             for to_label, to_state_set in lookup.items():
                 for to_state in to_state_set:
-                    graph.add_edge(Edge(
-                        nodes[from_state],
-                        nodes[to_state],
-                        label=to_label
-                    ))
+                    if to_label != ',':
+                        graph.add_edge(Edge(
+                            nodes[from_state],
+                            nodes[to_state],
+                            label=to_label
+                        ))
+                    else:
+                        graph.add_edge(Edge(
+                            nodes[from_state],
+                            nodes[to_state],
+                            label='，'
+                        ))
         graph.write(path, format='png')
 
     def get_e_closure(self, state):
