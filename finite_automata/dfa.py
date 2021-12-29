@@ -100,7 +100,7 @@ class DFA(FA):
             for input_char in self.input_alphabet:
                 new_transitions[name][input_char] = state_index[
                     self.transitions[list(equal_states)[0]][input_char]
-                ]
+                ] if input_char in self.transitions[list(equal_states)[0]] else None
 
         # Update
         self.all_states = new_states
@@ -177,16 +177,17 @@ class DFA(FA):
         # Add edges
         for from_state, lookup in self.transitions.items():
             for to_label, to_state in lookup.items():
-                if to_label != ',':
-                    graph.add_edge(Edge(
-                        nodes[from_state],
-                        nodes[to_state],
-                        label=to_label
-                    ))
-                else:
-                    graph.add_edge(Edge(
-                        nodes[from_state],
-                        nodes[to_state],
-                        label='，'
-                    ))
+                if to_state:
+                    if to_label != ',':
+                        graph.add_edge(Edge(
+                            nodes[from_state],
+                            nodes[to_state],
+                            label=to_label
+                        ))
+                    else:
+                        graph.add_edge(Edge(
+                            nodes[from_state],
+                            nodes[to_state],
+                            label='，'
+                        ))
         graph.write(path, format='png')
