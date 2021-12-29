@@ -87,15 +87,15 @@ class DFA(FA):
         state_index = {}
         for i, equal_states in enumerate(groups):
             for state in equal_states:
-                state_index[state] = str(i)
+                state_index[state] = i
 
         # Generate new state number
-        new_states = (set(str(i) for i in range(len(groups))))
+        new_states = (set(i for i in range(len(groups))))
         new_initial_state = state_index[self.initial_state]
         new_final_states = set([state_index[final_state] for final_state in self.final_states])
         new_transitions = {}
         for i, equal_states in enumerate(groups):
-            name = str(i)
+            name = i
             new_transitions[name] = {}
             for input_char in self.input_alphabet:
                 new_transitions[name][input_char] = state_index[

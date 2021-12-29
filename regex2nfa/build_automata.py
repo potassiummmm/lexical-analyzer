@@ -1,12 +1,14 @@
 from finite_automata.nfa import NFA
+
+
 class BuildAutomata:
     @staticmethod
     def basicstruct(inp):
-        '''
+        """
         Create a basic struct, which accepts a inp.
         :param inp:
         :return:
-        '''
+        """
 
         state1 = 1
         state2 = 2
@@ -20,7 +22,7 @@ class BuildAutomata:
 
     @staticmethod
     def starstruct(automata):
-        '''
+        """
         Create a star struct (As shown in Thompson algorithm.)
         In detail:
             1. Expand the automata, making it start from second.
@@ -31,8 +33,8 @@ class BuildAutomata:
 
         :param automata: Automata that needs to create * closure.
         :return: star automata.
-        '''
-        a, m1 = automata.rebuild_from_number(2) # type: NFA, int
+        """
+        a, m1 = automata.rebuild_from_number(2)  # type: NFA, int
         state1 = 1
         state2 = m1
         star = NFA(automata.language)
@@ -47,7 +49,7 @@ class BuildAutomata:
 
     @staticmethod
     def dotstruct(a: NFA, b: NFA):
-        '''
+        """
         Create a dot struct (As shown in Thompson Algorithm).
         In Detail:
             1. Rearrange the number of a&b automata, making the last state of a to be the init state of b.
@@ -56,7 +58,7 @@ class BuildAutomata:
         :param a:
         :param b:
         :return: dotted automata
-        '''
+        """
         a, m1 = a.rebuild_from_number(1)
         b, m2 = b.rebuild_from_number(m1)
 
@@ -72,7 +74,7 @@ class BuildAutomata:
 
     @staticmethod
     def orstruct(a: NFA, b: NFA):
-        '''
+        """
         Create an or struct (As shown in Thompson Algorithm):
         In Detail:
             1. Rearrange a start from 2, b start b from the last of a + 1.
@@ -83,7 +85,7 @@ class BuildAutomata:
         :param a:
         :param b:
         :return:
-        '''
+        """
 
         a, m1 = a.rebuild_from_number(2)
         b, m2 = b.rebuild_from_number(m1)

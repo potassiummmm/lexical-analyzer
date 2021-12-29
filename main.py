@@ -1,7 +1,7 @@
 from finite_automata.dfa import DFA
 from regex2nfa.build_automata import BuildAutomata
 from regex2nfa import Regex2NFA
-from test import test_nfa2dfa, test_lexer
+from test import  test_lexer
 if __name__ == '__main__':
     # test_nfa2dfa.test_nfa()
     test_lexer.lexer_test()
