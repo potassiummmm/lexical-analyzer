@@ -52,7 +52,7 @@ class NFA2DFA:
                     if states[item] not in final_dict:
                         final_dict[states[item]] = {nfa.label_dict[original_item]}
                     else:
-                        if final_dict[states[item]] == 'identifier':
+                        if final_dict[states[item]] == 'identifier' or final_dict[states[item]] == 'number':
                             final_dict[states[item]] = {nfa.label_dict[original_item]}
         dfa = DFA(all_states=[_ for _ in range(cur_state)], input_alphabet=new_language, transitions=transitions,
                   initial_state=0, final_states=final_states, label_dict=final_dict)
