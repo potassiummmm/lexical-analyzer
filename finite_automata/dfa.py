@@ -120,9 +120,9 @@ class DFA(FA):
 
     def accept_input(self, input_str: str):
         input_list = input_str.split(' ')
-        cur_state = self.initial_state
         for string in input_list:
             accepted = ''
+            cur_state = self.initial_state
             for input_char in string:
                 if cur_state in self.transitions.keys() and input_char in self.transitions[cur_state]: # accept and goto next state
                     accepted += input_char

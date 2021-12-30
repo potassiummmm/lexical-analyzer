@@ -22,7 +22,7 @@ class Lexer:
         if mode == 'test':
             self._run_test(output_mode)
         elif mode == 'pl0':
-            self._run_test(output_mode)
+            self._run_pl0(output_mode)
         elif mode == 'custom':
             self._run_custom(output_mode)
 
